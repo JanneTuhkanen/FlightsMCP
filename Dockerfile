@@ -1,24 +1,38 @@
 # Use Python 3.12 slim image
 FROM python:3.12-slim
 
-# Set working directory
-WORKDIR /app
-
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    APP_VERSION=1.0.0
+    APP_VERSION=1.0.0 \
+    VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH"
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && \
+    mkdir -p /app && \
+    chown -R appuser:appuser /app
+
+# Set working directory
+WORKDIR /app
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Switch to non-root user
+USER appuser
 
 # Copy dependency files
-COPY pyproject.toml requirements.txt ./
+COPY --chown=appuser:appuser pyproject.toml requirements.txt ./
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir -e .
+# Create virtual environment and install dependencies
+RUN uv venv && \
+    uv pip install -r requirements.txt && \
+    uv pip install -e .
 
 # Copy application code
-COPY settings.py ./
-COPY app/ ./app/
+COPY --chown=appuser:appuser settings.py ./
+COPY --chown=appuser:appuser app/ ./app/
 
 # Expose port (adjust if your app uses a different port)
 EXPOSE 8000
