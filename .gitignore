@@ -1,0 +1,15 @@
+# Environment
+.env
+env/
+venv/
+__pycache__/
+.vscode/
+
+# Local development
+test.http
+
+# Frontend
+node_modules/
+
+# Tests
+.coverage
