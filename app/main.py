@@ -3,6 +3,7 @@ import logging
 import time
 from fastmcp import FastMCP
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse, Response
 import mcp
 
 from settings import APP_VERSION
@@ -27,6 +28,17 @@ async def health() -> dict:
         "version": APP_VERSION,
         "uptime_seconds": int(time.time() - START),
     }
+
+@mcp.custom_route("/flights", methods=["GET"])
+async def get_flights(request):
+    # Implement your logic to fetch and return flight data here
+    return JSONResponse(
+        content={"flights": [   
+            { "id": 1, "price": 230, "duration minutes": 65, "company": "finnair", "stops": 0, "depart_iso": "2025-10-15T15:00:00Z", "arrive_iso": "2025-10-15T16:05:00Z" }, 
+            { "id": 2, "price": 30, "duration minutes": 65, "company": "air china", "stops": 0, "depart_iso": "2025-10-15T08:00:00Z", "arrive_iso": "2025-10-15T09:05:00Z" }, 
+            { "id": 3, "price": 120, "duration minutes": 75, "company": "norwegian", "stops": 0, "depart_iso": "2025-10-15T12:00:00Z", "arrive_iso": "2025-10-15T13:15:00Z" } 
+        ]},
+        status_code=200)
 
 app = mcp.http_app()
 
