@@ -30,16 +30,15 @@ async def health() -> dict:
     }
 
 @mcp.tool("/flights")
-async def get_flights() -> JSONResponse:
+async def get_flights() -> dict:
     """
     Docstring for get_flights tool. This tool returns a list of available flights with details such as price, company, stops, and departure/arrival times in ISO format.
     Duration should be calculated from the departure and arrival times upon receiving the request, and the response should include the duration in minutes for each flight. 
     The response is a JSON object containing an array of flight details.
     
-    :return: JSONResponse
+    :return: dict: A dictionary containing a list of flights, where each flight is represented as a dictionary with keys such as id, price, company, stops, destination, depart_iso, and arrive_iso.
     """
-    return JSONResponse(
-        content={"flights": [   
+    return {"flights": [   
             { "id": 1, "price": 230, "company": "finnair", "stops": 0, "destination": "Paris", "depart_iso": "2026-10-15T15:00:00Z", "arrive_iso": "2026-10-15T16:05:00Z" }, 
             { "id": 2, "price": 30, "company": "air china", "stops": 0, "destination": "Beijing", "depart_iso": "2026-10-15T08:00:00Z", "arrive_iso": "2026-10-15T09:05:00Z" }, 
             { "id": 3, "price": 120, "company": "norwegian", "stops": 0, "destination": "Oslo", "depart_iso": "2026-10-15T12:00:00Z", "arrive_iso": "2026-10-15T13:15:00Z" },
@@ -60,8 +59,7 @@ async def get_flights() -> JSONResponse:
             { "id": 18, "price": 200, "company": "lufthansa", "stops": 0, "destination": "London", "depart_iso": "2026-10-21T14:15:00Z", "arrive_iso": "2026-10-21T15:25:00Z" },
             { "id": 19, "price": 165, "company": "finnair", "stops": 1, "destination": "Berlin", "depart_iso": "2026-10-21T10:00:00Z", "arrive_iso": "2026-10-21T11:30:00Z" },
             { "id": 20, "price": 105, "company": "norwegian", "stops": 2, "destination": "Oslo", "depart_iso": "2026-10-21T04:30:00Z", "arrive_iso": "2026-10-21T06:35:00Z" }
-        ]},
-        status_code=200)
+        ]}
 
 app = mcp.http_app()
 
